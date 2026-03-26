@@ -1,18 +1,19 @@
-#
-# Runtime image for Spring Boot app.
-# This Dockerfile assumes you already built the JAR locally (./mvnw package),
-# then it copies `target/*.jar` into the image.
-#
-# Usage:
-#   ./mvnw -DskipTests package
-#   docker build -t spring-app .
-#   docker run --rm -p 8080:8080 spring-app
-#
+# -------- Stage 1: Build --------
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
+WORKDIR /app
 
+# Copy source code
+COPY . .
+
+# Build jar
+RUN mvn clean package -DskipTests
+
+# -------- Stage 2: Run --------
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 
-COPY target/*.jar /app/app.jar
+# Copy jar từ stage build
+COPY --from=builder /app/target/*.jar /app/app.jar
 
 EXPOSE 8080
 ENV JAVA_OPTS=""
