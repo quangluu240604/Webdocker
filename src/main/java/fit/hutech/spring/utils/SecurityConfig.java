@@ -38,8 +38,10 @@ public class SecurityConfig {
 
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
-		var auth = new DaoAuthenticationProvider(userDetailsService());
-		auth.setPasswordEncoder(passwordEncoder());
+		// Spring Security 6.3.x DaoAuthenticationProvider does not accept UserDetailsService in the constructor.
+		// Configure both explicitly.
+		var auth = new DaoAuthenticationProvider(passwordEncoder());
+		auth.setUserDetailsService(userDetailsService());
 		return auth;
 	}
 
