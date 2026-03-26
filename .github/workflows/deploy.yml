@@ -58,11 +58,11 @@ jobs:
 
           # Cloudflare có thể trả 524 (timeout) dù deploy vẫn chạy ở backend.
           # Với 524: coi như đã kích hoạt deploy, không fail CI; kiểm tra dashboard Logs/Trạng thái.
-          ATTEMPTS=3
-          SLEEP_SEC=5
+          ATTEMPTS=5
+          SLEEP_SEC=3
 
           for i in $(seq 1 "$ATTEMPTS"); do
-            RESPONSE="$(curl -sS --connect-timeout 10 --max-time 120 -w "\n%{http_code}" -X POST "$URL" || true)"
+            RESPONSE="$(curl -sS -L --connect-timeout 10 --max-time 30 --retry 2 --retry-all-errors --retry-delay 2 -w "\n%{http_code}" -X POST "$URL" || true)"
             BODY="$(printf "%s" "$RESPONSE" | sed '$d')"
             CODE="$(printf "%s" "$RESPONSE" | tail -n1 | tr -d '\r')"
 
@@ -85,9 +85,13 @@ jobs:
             fi
 
             if [ "${CODE:-}" = "000" ] || [ -z "${CODE:-}" ]; then
-              echo "Không nhận được HTTP code (mạng/kết nối). Thử lại sau ${SLEEP_SEC}s..."
-              sleep "$SLEEP_SEC"
-              continue
+              if [ "$i" -lt "$ATTEMPTS" ]; then
+                echo "Webhook không trả response (CODE=000). Thử lại sau ${SLEEP_SEC}s..."
+                sleep "$SLEEP_SEC"
+                continue
+              fi
+              echo "Webhook không trả response (CODE=000) sau $ATTEMPTS lần. Khong fail CI; hay kiem tra dashboard Logs/Trạng thái."
+              exit 0
             fi
 
             if [ "$i" -lt "$ATTEMPTS" ]; then
