@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kết quả</title>
+</head>
+<body>
+	<h1>Kết quả liên hệ</h1>
+	<ul>
+		<li><strong>Họ Tên:</strong> <span th:text="${fullName}">Nguyen Van A</span></li>
+		<li><strong>Email:</strong> <span th:text="${email}">email@example.com</span></li>
+		<li><strong>Tin nhắn:</strong> <span th:text="${message}">Noi dung</span></li>
+		<li><strong>Ngày Gửi:</strong> <span th:text="${sentDate}">2026-02-12</span></li>
+	</ul>
+	<a href="/contact">Quay lại liên hệ</a>
+</body>
+</html>

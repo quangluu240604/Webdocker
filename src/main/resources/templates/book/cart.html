@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart</title>
+<th:block th:replace="~{layout::link-css}"></th:block>
+<th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{layout::header}"></th:block>
+<div class="container py-4">
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+<div th:if="${#lists.isEmpty(cart.cartItems)}" class="text-center py-5">
+<h3>Your cart is empty</h3>
+<p class="text-secondary">Add some books to continue.</p>
+<a class="btn btn-primary" href="/books">Go to catalog</a>
+</div>
+
+<div th:if="${not #lists.isEmpty(cart.cartItems)}" class="row g-4">
+<div class="col-lg-8">
+<div class="card shadow-sm border-0">
+<div class="card-body">
+<h4 class="mb-3">Shopping Cart</h4>
+<div class="table-responsive">
+<table class="table align-middle">
+<thead>
+<tr>
+<th>Book</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="item : ${cart.cartItems}">
+<td>
+<div class="fw-semibold" th:text="${item.bookName}"></div>
+<small class="text-secondary">ID: <span th:text="${item.bookId}"></span></small>
+</td>
+<td th:text="${item.price}"></td>
+<td style="max-width: 120px;">
+<input type="number" min="1" th:value="${item.quantity}" th:attr="data-id=${item.bookId}" class="form-control quantity">
+</td>
+<td th:text="${item.price * item.quantity}"></td>
+<td>
+<a class="btn btn-outline-danger btn-sm" th:href="@{/cart/removeFromCart/{id}(id=${item.bookId})}">Remove</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4">
+<div class="card shadow-sm border-0 mb-3">
+<div class="card-body">
+<h5>Order Summary</h5>
+<p class="mb-1">Items: <strong th:text="${totalQuantity}"></strong></p>
+<p class="mb-3">Total: <strong th:text="${totalPrice}"></strong></p>
+<a class="btn btn-outline-secondary w-100 mb-2" th:href="@{/cart/clearCart}">Clear cart</a>
+</div>
+</div>
+
+<div class="card shadow-sm border-0">
+<div class="card-body">
+<h5 class="mb-3">Checkout</h5>
+<form th:action="@{/cart/checkout}" th:object="${checkoutVm}" method="post">
+<div class="mb-2">
+<label class="form-label">Receiver name</label>
+<input type="text" class="form-control" th:field="*{receiverName}">
+<div class="text-danger small" th:if="${#fields.hasErrors('receiverName')}" th:errors="*{receiverName}"></div>
+</div>
+<div class="mb-2">
+<label class="form-label">Receiver phone</label>
+<input type="text" class="form-control" th:field="*{receiverPhone}">
+<div class="text-danger small" th:if="${#fields.hasErrors('receiverPhone')}" th:errors="*{receiverPhone}"></div>
+</div>
+<div class="mb-2">
+<label class="form-label">Shipping address</label>
+<input type="text" class="form-control" th:field="*{shippingAddress}">
+<div class="text-danger small" th:if="${#fields.hasErrors('shippingAddress')}" th:errors="*{shippingAddress}"></div>
+</div>
+<div class="mb-3">
+<label class="form-label">Note</label>
+<textarea class="form-control" rows="2" th:field="*{note}"></textarea>
+<div class="text-danger small" th:if="${#fields.hasErrors('note')}" th:errors="*{note}"></div>
+</div>
+<button class="btn btn-success w-100" type="submit" onclick="return confirm('Confirm checkout?')">Place order</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<th:block th:replace="~{layout::footer}"></th:block>
+<script th:src="@{/js/cart.js}"></script>
+</body>
+</html>
+

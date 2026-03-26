@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Danh sách môn học</title>
+	<style>
+		body { font-family: Arial, sans-serif; }
+		.subjects { display: flex; flex-wrap: wrap; gap: 16px; }
+		.card { border: 1px solid #ccc; padding: 12px; width: 220px; }
+		.card img { max-width: 100%; height: auto; display: block; }
+	</style>
+</head>
+<body>
+	<h1>Danh sách môn học ngành Công nghệ phần mềm</h1>
+	<div class="subjects">
+		<div class="card" th:each="subject : ${subjects}">
+			<img th:src="${subject.imageUrl}" alt="Subject image">
+			<p><strong>Mã môn:</strong> <span th:text="${subject.code}">CSE000</span></p>
+			<p><strong>Tên môn:</strong> <span th:text="${subject.name}">Ten mon</span></p>
+		</div>
+	</div>
+	<a href="/">Quay về trang chủ</a>
+</body>
+</html>

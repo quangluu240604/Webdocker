@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Detail</title>
+<th:block th:replace="~{layout::link-css}"></th:block>
+<th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{layout::header}"></th:block>
+<div class="container py-4">
+<div class="row g-4">
+<div class="col-md-4">
+<img th:if="${book.imageUrl != null and !#strings.isEmpty(book.imageUrl)}"
+     th:src="${book.imageUrl}"
+     th:alt="${book.title}"
+     class="img-fluid rounded border">
+<div th:if="${book.imageUrl == null or #strings.isEmpty(book.imageUrl)}"
+     class="border rounded d-flex align-items-center justify-content-center text-muted"
+     style="height: 260px;">
+No image
+</div>
+</div>
+<div class="col-md-8">
+<h2 th:text="${book.title}">Book title</h2>
+<p class="mb-1"><strong>Author:</strong> <span th:text="${book.author}"></span></p>
+<p class="mb-1"><strong>Price:</strong> <span th:text="${book.price}"></span></p>
+<p class="mb-1"><strong>Category:</strong> <span th:text="${book.category != null ? book.category.name : 'N/A'}"></span></p>
+<p class="mb-3"><strong>Stock:</strong> <span th:text="${book.stockQuantity != null ? book.stockQuantity : 0}"></span></p>
+<p class="mb-4" th:text="${book.description != null && !#strings.isEmpty(book.description) ? book.description : 'No description'}"></p>
+<a class="btn btn-secondary" th:href="@{/books}">Back to list</a>
+</div>
+</div>
+</div>
+<th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>

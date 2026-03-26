@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenShelf Bookstore</title>
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link th:fragment="link-css" rel="stylesheet" th:href=@{/css/bootstrap.min.css}>
+<link th:fragment="custom-css" rel="stylesheet" th:href=@{/css/style.css}>
+</head>
+<body class="page-shell">
+  <section class="page-banner page-banner--top">
+    <div class="banner-shell">
+      <div>
+        <p class="banner-kicker">GREEN SHELF EXCLUSIVE</p>
+        <h1>Chuỗi sách xanh dành cho những người yêu sáng tạo</h1>
+        <p>Giao hàng sạch, bìa tái chế, trợ giúp học thuật và bộ sưu tập curated-ready.</p>
+      </div>
+      <div class="banner-actions">
+        <a class="btn btn-primary btn-pill" href="/books">Khám phá bộ sưu tập</a>
+        <a class="btn btn-outline" href="/subjects">Thu thập chủ đề</a>
+      </div>
+    </div>
+  </section>
+  <header th:fragment="header" class="site-header">
+    <div class="header-shell">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <div>
+          <div class="brand-title">GreenShelf</div>
+          <div class="brand-subtitle">Bookstore &amp; Learning Studio</div>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <a class="nav-link" href="/">Trang chủ</a>
+        <a class="nav-link" href="/books">Sách</a>
+        <a class="nav-link" href="/subjects">Chủ đề</a>
+        <a class="nav-link" href="/orders">Đơn hàng</a>
+        <a class="nav-link" href="/chat-room">Hỗ trợ</a>
+      </nav>
+      <div class="header-actions">
+        <form class="header-search">
+          <input type="search" placeholder="Tìm sách, tác giả, chủ đề..." aria-label="Search"/>
+          <button type="submit">Tìm</button>
+        </form>
+        <div class="action-buttons">
+          <a class="btn text-btn" href="/books">Danh sách</a>
+          <div class="header-auth">
+            <span class="user-greeting" sec:authorize="isAuthenticated()">Xin chào, <span th:text="${#authentication.name}">Bạn</span></span>
+            <a class="btn btn-primary" href="/login" sec:authorize="!isAuthenticated()">Đăng nhập</a>
+            <form class="logout-form" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              <button type="submit" class="btn btn-outline-dark">Logout</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="page-content">
+    <div class="content-shell">
+      <div class="content-wrapper" th:fragment="content"></div>
+      <aside class="page-spotlight">
+        <div class="spotlight-card">
+          <p class="badge">Ưu đãi xanh</p>
+          <h3>Ship miễn phí</h3>
+          <p>Áp dụng cho đơn hàng trên 1.5 triệu, kèm túi vải tái chế.</p>
+        </div>
+        <div class="spotlight-card">
+          <p class="badge">Lời khuyên học thuật</p>
+          <h4>Workshop cuối tuần</h4>
+          <span>Đăng ký để nhận phiếu ưu đãi cho lần sau.</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <section class="page-banner page-banner--bottom">
+    <div class="banner-shell">
+      <div>
+        <p class="banner-kicker">THANH XANH THƯỜNG XUYÊN</p>
+        <h2>Trải nghiệm mua sách như bước vào gallery nghệ thuật</h2>
+        <p>Cập nhật catalogue theo từng mùa, tập trung vào các tác giả mới, kết nối cộng đồng.</p>
+      </div>
+      <div class="banner-actions">
+        <a class="btn btn-pill btn-primary" href="/chat-room">Nói chuyện với admin</a>
+      </div>
+    </div>
+  </section>
+  <footer th:fragment="footer" class="site-footer">
+    <div class="footer-shell">
+      <div>
+        <div class="footer-brand">GreenShelf</div>
+        <p>Thắp sáng hành trình đọc bằng curated selection và warehouse xanh.</p>
+      </div>
+      <div class="footer-links">
+        <h5>Khám phá</h5>
+        <a href="/books">Books</a>
+        <a href="/subjects">Subjects</a>
+        <a href="/chat-room">Chat</a>
+      </div>
+      <div class="footer-links">
+        <h5>Hỗ trợ</h5>
+        <a href="/orders">Track order</a>
+        <a href="/cart">Giỏ hàng</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-newsletter">
+        <p>Nhận tin ưu đãi ngoạn mục</p>
+        <form>
+          <input type="email" placeholder="Email của bạn" />
+          <button type="submit">Đăng ký</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span th:text="${#dates.year(#dates.createNow())}"></span> GreenShelf. All rights reserved.</span>
+      <span>Made with passion tại HUTECH.</span>
+    </div>
+  </footer>
+  <script th:src=@{/js/bootstrap.min.js}></script>
+  <script th:src=@{/js/jquery-3.7.0.min.js}></script>
+  <script th:src=@{/js/chatbox.js}></script>
+</body>
+</html>

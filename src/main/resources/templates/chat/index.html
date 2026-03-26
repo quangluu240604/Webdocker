@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat giữa Admin và User</title>
+<th:block th:replace="~{layout::link-css}"></th:block>
+<th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{layout::header}"></th:block>
+<main class="page-content">
+  <div class="page-section">
+    <section class="chat-room">
+      <div class="chat-room__wrapper" th:attr="data-current-user=${currentUser},data-is-admin=${isAdmin}">
+        <div class="chat-room__sidebar">
+          <h3>Trò chuyện trực tuyến</h3>
+          <p class="lead">Kênh liên lạc giữa Admin &amp; người dùng, hỗ trợ giải đáp trong vòng 5 phút.</p>
+          <div class="chat-room__status-card">
+            <p>Đăng nhập dưới vai trò</p>
+            <h4 th:text="${isAdmin} ? 'ADMIN' : 'USER'"></h4>
+            <span th:text="'Tài khoản: ' + ${currentUser}"></span>
+          </div>
+          <div class="chat-room__tips">
+            <p class="mb-1">Mẹo dùng nhanh:</p>
+            <ul>
+              <li>Thêm mã đơn hàng để admin phản hồi chính xác.</li>
+              <li>Admin dùng lựa chọn ADMIN để đánh dấu tin chuyên nghiệp.</li>
+              <li>Tin nhắn lướt nhẹ qua tab, sẽ lưu trong cơ sở dữ liệu.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="chat-room__main">
+          <div class="chat-room__header">
+            <div>
+              <p class="badge">Live support</p>
+              <h2>Cuộc trò chuyện</h2>
+            </div>
+            <span class="chat-room__label" th:text="${timestamp}"></span>
+          </div>
+          <div class="chat-room__messages" id="chat-room-messages">
+            <div th:each="message : ${messages}" th:class="'chat-room__message' + (message.role == 'ADMIN' ? ' chat-room__message--admin' : ' chat-room__message--user')">
+              <div class="chat-room__message-sender" th:text="${message.sender}"></div>
+              <p th:text="${message.body}"></p>
+              <span class="chat-room__message-time" th:text="${message.time}"></span>
+            </div>
+          </div>
+          <form class="chat-room__form" id="chat-room-form">
+            <input id="chat-room-input" name="message" type="text" placeholder="Viết tin nhắn..." autocomplete="off" />
+            <select id="chat-room-sender" name="sender">
+              <option value="USER" selected>Bạn</option>
+              <option value="ADMIN" th:disabled="${!isAdmin}">Admin</option>
+            </select>
+            <button type="submit">Gửi</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<script th:src="@{/js/chatroom.js}"></script>
+<th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>
+

@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenShelf Bookstore</title>
+<th:block th:replace="~{layout::link-css}"></th:block>
+<th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{layout::header}"></th:block>
+<th:block th:replace="~{layout::content}">
+  <div class="hero-panel">
+    <div>
+      <p class="badge">Ưu tiên thành viên</p>
+      <h1>Thư viện thương mại điện tử dành cho người yêu sách hiện đại</h1>
+      <p>Được thiết kế như trải nghiệm gallery: curated selection, giao hàng xanh và chuyên viên học thuật đồng hành.</p>
+      <div class="hero-actions">
+        <a class="btn btn-pill btn-primary" href="/books" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Khám phá bộ sưu tập</a>
+        <a class="btn btn-pill btn-outline" href="/subjects">Khám phá chủ đề</a>
+      </div>
+    </div>
+    <div class="book-cta">
+      <div class="cta-card">
+        <strong>Đơn hàng xanh</strong>
+        <span>2.300+ khách hàng được giảm 20% phí vận chuyển bền vững.</span>
+      </div>
+      <div class="cta-card">
+        <strong>Thu hồi sách cũ</strong>
+        <span>Đổi sách đã đọc lấy voucher hoặc tư vấn sáng tạo riêng.</span>
+      </div>
+    </div>
+  </div>
+  <section>
+    <div class="section-title">Danh mục nổi bật</div>
+    <div class="category-row">
+      <article class="category-card">
+        <span class="badge">Tái tạo cảm hứng</span>
+        <h3>Tiểu thuyết thăng hoa</h3>
+        <p>Tác phẩm văn học đương đại, in trên giấy tái chế và bìa phủ xanh.</p>
+      </article>
+      <article class="category-card">
+        <span class="badge">Giáo dục</span>
+        <h3>Giáo trình &amp; học thuật</h3>
+        <p>Giáo trình chuẩn HUTECH kết hợp workbook thực hành và workshop chuyên sâu.</p>
+      </article>
+      <article class="category-card">
+        <span class="badge">Phát triển bản thân</span>
+        <h3>Khởi tạo tư duy</h3>
+        <p>Kỹ năng mềm, tinh thần đổi mới và hướng dẫn xây dựng cộng đồng học tập.</p>
+      </article>
+    </div>
+  </section>
+  <section>
+    <div class="section-title">Dịch vụ xanh hiện đại</div>
+    <div class="feature-grid">
+      <article class="feature-card">
+        <span class="badge">Thanh toán</span>
+        <h3>An toàn &amp; thân thiện</h3>
+        <p>Hỗ trợ chuyển khoản, ví điện tử và mã QR, chuẩn bảo mật PCI DSS.</p>
+      </article>
+      <article class="feature-card">
+        <span class="badge">Tư vấn</span>
+        <h3>Tùy chỉnh đọc</h3>
+        <p>Chuyên viên curation gợi ý theo hành trình học tập và sở thích cá nhân.</p>
+      </article>
+      <article class="feature-card">
+        <span class="badge">Cam kết</span>
+        <h3>Đổi trả 30 ngày</h3>
+        <p>Sách có lỗi được đổi mới, đóng gói 100% giấy và giao tận tay.</p>
+      </article>
+    </div>
+  </section>
+  <section>
+    <div class="section-title">Bản tin &amp; sự kiện</div>
+    <div class="book-cta">
+      <div class="cta-card">
+        <strong>Cập nhật tuần</strong>
+        <span>30 đầu sách mới, hội thảo và workshop phát triển kỹ năng mỗi đầu tuần.</span>
+      </div>
+      <div class="cta-card">
+        <strong>Listening lounge</strong>
+        <span>Live stream &amp; Q&amp;A với tác giả mới, kết nối cộng đồng đọc sách xanh.</span>
+      </div>
+    </div>
+  </section>
+</th:block>
+<th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>
+
+

@@ -1,0 +1,10 @@
+# Keep the JAR available for Dockerfile COPY target/*.jar
+target/*
+!target/*.jar
+.idea
+*.iml
+.classpath
+.project
+.settings
+*.log
+**/.DS_Store

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+  <rect width="320" height="200" fill="#e6f2ff"/>
+  <rect x="24" y="24" width="272" height="152" fill="#ffffff" stroke="#2b5aa6" stroke-width="2"/>
+  <text x="160" y="95" text-anchor="middle" font-family="Arial" font-size="18" fill="#2b5aa6">SOFTWARE</text>
+  <text x="160" y="125" text-anchor="middle" font-family="Arial" font-size="16" fill="#2b5aa6">ARCHITECTURE</text>
+</svg>
