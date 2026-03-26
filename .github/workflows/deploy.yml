@@ -52,9 +52,9 @@ jobs:
           set -euo pipefail
 
           REPO="gm240604/webbanhang"
-          # Slot S2 trong dashboard map app port 8080 (Spring Boot container EXPOSE 8080).
-          CONTAINER_PORT=8080
-          URL="${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=2&container_port=$CONTAINER_PORT&strict_container_port=0"
+          # Slot S3: port ngoai 21075, app trong container port 80.
+          CONTAINER_PORT=80
+          URL="${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=3&container_port=$CONTAINER_PORT&strict_container_port=0"
 
           # Cloudflare có thể trả 524 (timeout) dù deploy vẫn chạy ở backend.
           # Với 524: coi như đã kích hoạt deploy, không fail CI; kiểm tra dashboard Logs/Trạng thái.
