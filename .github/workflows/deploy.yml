@@ -49,21 +49,55 @@ jobs:
 
       - name: Triển khai lên DevOps Classroom
         run: |
+          set -euo pipefail
+
           REPO="gm240604/webbanhang"
-          # Spring Boot trong image đang listen 8080 (Dockerfile EXPOSE 8080)
+          # Slot S2 trong dashboard map app port 8080 (Spring Boot container EXPOSE 8080).
           CONTAINER_PORT=8080
-          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=2&container_port=$CONTAINER_PORT&strict_container_port=0")
-          BODY=$(echo "$RESPONSE" | sed '$d')
-          CODE=$(echo "$RESPONSE" | tail -n1)
-          echo "Webhook HTTP: $CODE"
-          if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
-            echo "Deploy thất bại. Xem chi tiết trong nhóm log bên dưới."
-            echo "::group::Chi tiết webhook JSON"
-            echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
-            echo "::endgroup::"
-            exit 1
-          fi
-          echo "Deploy thành công."
-          echo "::group::Chi tiết webhook JSON"
-          echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
+          URL="${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=2&container_port=$CONTAINER_PORT&strict_container_port=0"
+
+          # Cloudflare có thể trả 524 (timeout) dù deploy vẫn chạy ở backend.
+          # Với 524: coi như đã kích hoạt deploy, không fail CI; kiểm tra dashboard Logs/Trạng thái.
+          ATTEMPTS=3
+          SLEEP_SEC=5
+
+          for i in $(seq 1 "$ATTEMPTS"); do
+            RESPONSE="$(curl -sS --connect-timeout 10 --max-time 120 -w "\n%{http_code}" -X POST "$URL" || true)"
+            BODY="$(printf "%s" "$RESPONSE" | sed '$d')"
+            CODE="$(printf "%s" "$RESPONSE" | tail -n1 | tr -d '\r')"
+
+            echo "Webhook HTTP: ${CODE:-<none>} (attempt $i/$ATTEMPTS)"
+
+            if [ -n "${CODE:-}" ] && [ "$CODE" -ge 200 ] 2>/dev/null && [ "$CODE" -lt 300 ] 2>/dev/null; then
+              echo "Deploy thành công."
+              echo "::group::Chi tiết webhook JSON"
+              echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
+              echo "::endgroup::"
+              exit 0
+            fi
+
+            if [ "${CODE:-}" = "524" ]; then
+              echo "Webhook timeout (524). Deploy có thể vẫn đang chạy; kiểm tra dashboard Logs/Trạng thái."
+              echo "::group::Chi tiết webhook (raw)"
+              echo "$BODY"
+              echo "::endgroup::"
+              exit 0
+            fi
+
+            if [ "${CODE:-}" = "000" ] || [ -z "${CODE:-}" ]; then
+              echo "Không nhận được HTTP code (mạng/kết nối). Thử lại sau ${SLEEP_SEC}s..."
+              sleep "$SLEEP_SEC"
+              continue
+            fi
+
+            if [ "$i" -lt "$ATTEMPTS" ]; then
+              echo "Deploy chưa thành công. Thử lại sau ${SLEEP_SEC}s..."
+              sleep "$SLEEP_SEC"
+            fi
+          done
+
+          echo "Deploy thất bại. Xem chi tiết trong nhóm log bên dưới."
+          echo "::group::Chi tiết webhook (raw)"
+          echo "$BODY"
           echo "::endgroup::"
+          exit 1
