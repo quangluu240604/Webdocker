@@ -13,6 +13,18 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build JAR (Maven Wrapper)
+        run: |
+          chmod +x ./mvnw
+          ./mvnw -DskipTests package
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -26,6 +38,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: Dockerfile
           push: true
           tags: |
             gm240604/webbanhang:latest
@@ -34,9 +47,10 @@ jobs:
       - name: Triển khai lên DevOps Classroom
         run: |
           REPO="gm240604/webbanhang"
-          CONTAINER_PORT=80
+          # Spring Boot trong image đang listen 8080 (Dockerfile EXPOSE 8080)
+          CONTAINER_PORT=8080
           RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=2&container_port=$CONTAINER_PORT&strict_container_port=0")
-          BODY=$(echo "$RESPONSE" | sed "$d")
+          BODY=$(echo "$RESPONSE" | sed '$d')
           CODE=$(echo "$RESPONSE" | tail -n1)
           echo "Webhook HTTP: $CODE"
           if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
